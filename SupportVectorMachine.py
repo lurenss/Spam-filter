@@ -26,7 +26,7 @@ def run(data, p):
     if(p==1):
         linear_svm(features,classes,features_train,classes_train)
     if(p==2):
-        polynomial_svm(features,classes,features_train,classes_train)
+        polynomial_svm(features,classes,features_train,classes_train,features_test,classes_test)
     if(p==3):
         rbf_svm(features,classes,features_train,classes_train)
     else:
@@ -54,11 +54,11 @@ def run(data, p):
     """
 
 #TRAINING_SET = "spambase/spambase.data"
-
+"""
 def load_data(f_name):
     fr = open(f_name, "r")
     data = np.loadtxt(fr, delimiter=",")
-    return data
+    return data"""
 
 #tfidf transformation
 def tfidf(features):
@@ -76,22 +76,22 @@ def linear_svm(features,classes,features_train,classes_train):
     results = cross_val_score(clf, features, classes, cv = 10, n_jobs= -1)
     print("--------------------------")
     print("SVM with linear kernel:\n")
-    print("Minimum precision: " + str(results.min()))
-    print("Maximum precision: " + str(results.max()))
-    print("Mean precison: " + str(results.mean()))
+    print("Minimum accuracy: " + str(results.min()))
+    print("Maximum accuracy: " + str(results.max()))
+    print("Mean accuracy: " + str(results.mean()))
     print("Variance: " + str(results.var()))
     clf_fit = clf.fit(features_train, classes_train)
     print("Number of support vectors for a trained SVM : "+ str(clf_fit.n_support_)) 
     print("--------------------------")
 
-def polynomial_svm(features,classes,features_train,classes_train):
+def polynomial_svm(features,classes,features_train,classes_train,x_test,y_test):
     clf = SVC(kernel="poly",degree=2,C=1.0)
     results = cross_val_score(clf, features, classes, cv = 10, n_jobs= -1)
     print("--------------------------")
     print("SVM with second grade polynomial kernel:\n")
-    print("Minimum precision: " + str(results.min()))
-    print("Maximum precision: " + str(results.max()))
-    print("Mean precison: " + str(results.mean()))
+    print("Minimum accuracy: " + str(results.min()))
+    print("Maximum accuracy: " + str(results.max()))
+    print("Mean accuracy: " + str(results.mean()))
     print("Variance: " + str(results.var()))
     clf_fit = clf.fit(features_train, classes_train)
     print("Number of support vectors for a trained SVM : "+ str(clf_fit.n_support_)) 
@@ -102,9 +102,9 @@ def rbf_svm(features,classes,features_train,classes_train):
     results = cross_val_score(clf, features, classes, cv = 10, n_jobs= -1)
     print("--------------------------")
     print("SVM with radial basis function kernel:\n")
-    print("Minimum precision: " + str(results.min()))
-    print("Maximum precision: " + str(results.max()))
-    print("Mean precison: " + str(results.mean()))
+    print("Minimum accuracy: " + str(results.min()))
+    print("Maximum accuracy: " + str(results.max()))
+    print("Mean accuracy: " + str(results.mean()))
     print("Variance: " + str(results.var()))
     clf_fit = clf.fit(features_train, classes_train)
     print("Number of support vectors for a trained SVM : "+ str(clf_fit.n_support_)) 
@@ -115,9 +115,9 @@ def linear_angle_svm(features,classes,features_train,classes_train):
     results = cross_val_score(clf, features, classes, cv = 10, n_jobs= -1)
     print("--------------------------")
     print("SVM with linear kernel (angle):\n")
-    print("Minimum precision: " + str(results.min()))
-    print("Maximum precision: " + str(results.max()))
-    print("Mean precison: " + str(results.mean()))
+    print("Minimum accuracy: " + str(results.min()))
+    print("Maximum accuracy: " + str(results.max()))
+    print("Mean accuracy: " + str(results.mean()))
     print("Variance: " + str(results.var()))
     clf_fit = clf.fit(features_train, classes_train)
     print("Number of support vectors for a trained SVM : "+ str(clf_fit.n_support_)) 
@@ -130,9 +130,9 @@ def polynomial_angle_svm(features,classes,features_train,classes_train):
     results = cross_val_score(clf, features, classes, cv = 10, n_jobs= -1)
     print("--------------------------")
     print("SVM with second grade polynomial (angle) kernel:\n")
-    print("Minimum precision: " + str(results.min()))
-    print("Maximum precision: " + str(results.max()))
-    print("Mean precison: " + str(results.mean()))
+    print("Minimum accuracy: " + str(results.min()))
+    print("Maximum accuracy: " + str(results.max()))
+    print("Mean accuracy: " + str(results.mean()))
     print("Variance: " + str(results.var()))
     clf_fit = clf.fit(features_train, classes_train)
     print("Number of support vectors for a trained SVM : "+ str(clf_fit.n_support_)) 
@@ -144,9 +144,9 @@ def rbf_angle_svm(features,classes,features_train,classes_train):
     results = cross_val_score(clf, features, classes, cv = 10, n_jobs= -1)
     print("--------------------------")
     print("SVM with radial basis function (angle) kernel:\n")
-    print("Minimum precision: " + str(results.min()))
-    print("Maximum precision: " + str(results.max()))
-    print("Mean precison: " + str(results.mean()))
+    print("Minimum accuracy: " + str(results.min()))
+    print("Maximum accuracy: " + str(results.max()))
+    print("Mean accuracy: " + str(results.mean()))
     print("Variance: " + str(results.var()))
     clf_fit = clf.fit(features_train, classes_train)
     print("Number of support vectors for a trained SVM : "+ str(clf_fit.n_support_)) 

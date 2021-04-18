@@ -16,7 +16,7 @@ k_folds = 10
 start = time()
 # second parameter 1= linear svm 2= polynomial svm 3=rbf svm
 #4= linear angular svm 5= polynomial angular svm 6= rbf angular svm
-SVM.run(dataset,6)
+SVM.run(dataset,2)
 end = time()
 print("\nTime elapsed: {}\n".format(end - start))
 
@@ -27,7 +27,7 @@ end = time()
 print("\nTime elapsed: {}\n".format(end - start))
 
 # Run K-Nearest Neighbors Classifier on dataset
-# start = time()
-# KNN.run(dataset, k_folds)
-# end = time()
-# print("\nTime elapsed: {}\n".format(end - start))
+start = time()
+KNN.run(dataset)
+end = time()
+print("\nTime elapsed: {}\n".format(end - start))

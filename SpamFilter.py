@@ -13,10 +13,12 @@ dataset = np.loadtxt(file, delimiter = ",")
 k_folds = 10
 
 # Run SVM Classifier on dataset
-# start = time()
-# SVM.run(dataset, k_folds)
-# end = time()
-# print("\nTime elapsed: {}\n".format(end - start))
+start = time()
+# second parameter 1= linear svm 2= polynomial svm 3=rbf svm
+#4= linear angular svm 5= polynomial angular svm 6= rbf angular svm
+SVM.run(dataset,6)
+end = time()
+print("\nTime elapsed: {}\n".format(end - start))
 
 # Run Naive Bayes Classifier on dataset
 start = time()

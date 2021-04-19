@@ -1,5 +1,4 @@
 import numpy as np
-from time import time
 import SupportVectorMachine as SVM
 import NaiveBayes as NB
 import KNearestNeighbors as KNN

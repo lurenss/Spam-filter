@@ -41,7 +41,7 @@ def run(dataset):
 
         end = time()
         print("\nTime elapsed: {}".format(end - start))
-        print("--------------------------\n")
+        print("--------------------------")
 
 """ Performs tfidf transformation """
 def tfidf(features):

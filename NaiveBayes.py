@@ -195,7 +195,7 @@ def run(dataset, k_folds):
     scores = evaluateModel(dataset, naiveBayesAlgorithm, k_folds)
 
     # Print out accuracy stats for each cross-validation fold, and a mean value at the end
-    print(">>>>> NAIVE BAYES <<<<<")
+    print("\n>>>>> NAIVE BAYES <<<<<")
     print("--------------------------")
 
     for i in range(0, k_folds):

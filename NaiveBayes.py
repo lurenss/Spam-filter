@@ -1,5 +1,6 @@
 import numpy as np
 from random import randrange
+from time import time
 from math import sqrt
 from math import exp
 from math import pi
@@ -26,18 +27,21 @@ def separateDataByClass(dataset):
 
     return dataByClass
 
-
-""" Calculate the mean of a list of feature values  """
+""" Calculate the mean of a list of values  """
 def mean(values):
     return sum(values) / float(len(values))
 
-
-""" Calculate the standard deviation of a list of feature values """
+""" Calculate the standard deviation of a list of values """
 def stdev(values):
     average = mean(values)
     variance = sum([(x - average) ** 2 for x in values]) / float(len(values) - 1) + 1e-128 # add small constant to avoid dividing by zero
     return sqrt(variance)
 
+""" Calculate the variance of a list of values """
+def variance(values):
+    average = mean(values)
+    variance = sum([(x - average) ** 2 for x in values]) / float(len(values) - 1) + 1e-128 # add small constant to avoid dividing by zero
+    return variance
 
 """ Summarizes the statistics for each feature in a dataset.
     Includes mean, standard deviation, and count. """
@@ -45,7 +49,6 @@ def summarizeDataByFeature(dataset):
     summaries = [(mean(feature), stdev(feature), len(feature)) for feature in zip(*dataset)]
     del (summaries[-1]) # remove the class label feature before returning, since we don't need calculations on this
     return summaries
-
 
 """ Calculates statistics for features, given a class.
     Separates the dataset by class then summarizes statistics for each feature.
@@ -60,14 +63,12 @@ def summarizeDataByClass(dataset):
 
     return summaries
 
-
 """ Calculates P(X) for a feature X using the Gaussian probability distribution function.
     Since we assume that all features have a Gausssian distribution, we can
     calculate that probability of a given feature X using the mean and stdev. """
 def calculateGaussianProbabilityForFeature(x, mean, stdev):
     exponent = exp(-((x-mean)**2 / (2 * stdev**2)))
     return (1 / (sqrt(2 * pi) * stdev)) * exponent
-
 
 """ Calculates the probability that an email belongs to each class
     Returns a dictionary of probabilities with one entry for each class label
@@ -98,7 +99,6 @@ def getFoldSegmentSize(dataset, folds):
     # Figure out the size of each segment if splitting the data in k folds
     return int(len(dataset) / folds)
 
-
 """ Split the dataset into k folds for cross-validation
     Returns a list of the data split into k segments. """
 def splitDataIntoFolds(dataset, folds, segmentSize):
@@ -125,28 +125,14 @@ def calculateAccuracy(actual, predicted):
 
 """ Evaluate a classification model using k-fold cross-validation """
 def evaluateModel(dataset, model, k_folds, *args):
-    total_emails = len(dataset)
-    segmentSize = getFoldSegmentSize(dataset, k_folds)
+    # Find fold size given the dataset and number of folds
+    foldSize = getFoldSegmentSize(dataset, k_folds)
 
     # Split data into k folds
-    splitData = splitDataIntoFolds(dataset, k_folds, segmentSize)
+    splitData = splitDataIntoFolds(dataset, k_folds, foldSize)
     scores = list()
 
-    #startIndex = 0
-   # endIndex = segmentSize
-
-    # For each segment of data
-    """for i in range(0, k_folds):
-        print(startIndex)
-        print(endIndex)
-        # Create the training dataset
-        segment = splitData[startIndex: endIndex]
-
-        train_set = list(splitData)
-        del train_set[startIndex:endIndex]
-        #train_set.remove(segment)
-        train_set = sum(train_set, [])"""
-
+    # For each fold
     foldNumber = 0
     for fold in splitData:
         # Create the training dataset
@@ -199,49 +185,32 @@ def naiveBayesAlgorithm(trainingSet, testingSet):
         predictions.append(output)
     return(predictions)
 
-
 """ Runs the Naive Bayes Classifier """
 def run(dataset, k_folds):
+    start = time()
+    minAccuracy = 100
+    maxAccuracy = 0
+
     # Evaluate Naive Bayes algorithm
     scores = evaluateModel(dataset, naiveBayesAlgorithm, k_folds)
 
     # Print out accuracy stats for each cross-validation fold, and a mean value at the end
     print(">>>>> NAIVE BAYES <<<<<")
+    print("--------------------------")
+
     for i in range(0, k_folds):
-        print("Accuracy (Iteration " + str(i+1) + "): %.3f%%" % scores[i])
-    print("Accuracy (Mean): %.3f%%" % (sum(scores)/float(len(scores))))
+        # Set min and max accuracy
+        if (scores[i] > maxAccuracy):
+                maxAccuracy = scores[i]
+        if (scores[i] < minAccuracy):
+                minAccuracy = scores[i]
+        print("Accuracy (iteration " + str(i+1) + "): %.3f%%" % scores[i])
 
-    # Test separate by class
-    """separated = separateDataByClass(dataset)
-    for label in separated:
-        print(label)
-        for row in separated[label]:
-          print(row)"""
+    print("\nAccuracy (minimum): %.3f%%" % minAccuracy)
+    print("Accuracy (maximum): %.3f%%" % maxAccuracy)
+    print("Accuracy (mean): %.3f%%" % (sum(scores)/float(len(scores))))
+    print("Variance: " + str(variance(scores)))
 
-    # Test summarize dataset by feature
-    """print("Summarize by feature -----------")
-    summaryByFeature = summarizeDataByFeature(dataset)
-    print(summaryByFeature)
-    print("")"""
-
-    # Test summarize dataset by class
-    """print("Summarize by class -----------")
-    summaryByClass = summarizeDataByClass(dataset)
-    for label in summaryByClass:
-        print(label)
-        for row in summaryByClass[label]:
-            print(row)
-    print("")"""
-
-    # Test Gaussian PDF
-    """print("Gaussian prob for feature -----------")
-    print(calculateGaussianProbabilityForFeature(1.0, 1.0, 1.0))
-    print(calculateGaussianProbabilityForFeature(2.0, 1.0, 1.0))
-    print(calculateGaussianProbabilityForFeature(0.0, 1.0, 1.0))
-    print("")"""
-
-    # Test calculating class probabilities
-    """print("test calc class prob -----------")
-    summaryByClass2 = summarizeDataByClass(dataset)
-    probabilities = calculateClassProbabilities(summaryByClass2, dataset[0])
-    print(probabilities)"""
+    end = time()
+    print("\nTime elapsed: {}".format(end - start))
+    print("--------------------------\n")

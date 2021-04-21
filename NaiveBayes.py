@@ -37,12 +37,6 @@ def stdev(values):
     variance = sum([(x - average) ** 2 for x in values]) / float(len(values) - 1) + 1e-128 # add small constant to avoid dividing by zero
     return sqrt(variance)
 
-""" Calculate the variance of a list of values """
-def variance(values):
-    average = mean(values)
-    variance = sum([(x - average) ** 2 for x in values]) / float(len(values) - 1) + 1e-128 # add small constant to avoid dividing by zero
-    return variance
-
 """ Summarizes the statistics for each feature in a dataset.
     Includes mean, standard deviation, and count. """
 def summarizeDataByFeature(dataset):
@@ -123,6 +117,14 @@ def calculateAccuracy(actual, predicted):
             correct += 1
     return correct / float(len(actual)) * 100.0
 
+""" Calculate the variance for the class predictions """
+def calculateVariance(actual, predicted):
+    variances = list()
+    for i in range(len(actual)):
+        variance = sum([(predicted[i] - actual[i]) ** 2]) / float(len(predicted) - 1) + 1e-128 # add small constant to avoid dividing by zero
+        variances.append(variance)
+    return mean(variances)
+
 """ Evaluate a classification model using k-fold cross-validation """
 def evaluateModel(dataset, model, k_folds, *args):
     # Find fold size given the dataset and number of folds
@@ -131,6 +133,7 @@ def evaluateModel(dataset, model, k_folds, *args):
     # Split data into k folds
     splitData = splitDataIntoFolds(dataset, k_folds, foldSize)
     scores = list()
+    variances = list()
 
     # For each fold
     foldNumber = 0
@@ -158,7 +161,11 @@ def evaluateModel(dataset, model, k_folds, *args):
         accuracy = calculateAccuracy(actual, predicted)
         scores.append(accuracy)
 
-    return scores
+        # Calculate the variance of the Naive Bayes algorithm
+        variance = calculateVariance(actual, predicted)
+        variances.append(variance)
+
+    return [scores, variances]
 
 """ Predict the class label for an email by choosing the class label with the largest probability """
 def predictClass(summaries, email):
@@ -192,7 +199,9 @@ def run(dataset, k_folds):
     maxAccuracy = 0
 
     # Evaluate Naive Bayes algorithm
-    scores = evaluateModel(dataset, naiveBayesAlgorithm, k_folds)
+    results = evaluateModel(dataset, naiveBayesAlgorithm, k_folds)
+    scores = results[0]
+    variances = results[1]
 
     # Print out accuracy stats for each cross-validation fold, and a mean value at the end
     print("\n>>>>> NAIVE BAYES <<<<<")
@@ -208,8 +217,8 @@ def run(dataset, k_folds):
 
     print("\nAccuracy (minimum): %.3f%%" % minAccuracy)
     print("Accuracy (maximum): %.3f%%" % maxAccuracy)
-    print("Accuracy (mean): %.3f%%" % (sum(scores)/float(len(scores))))
-    print("Variance: " + str(variance(scores)))
+    print("Accuracy (mean): %.3f%%" % mean(scores))
+    print("Variance: " + str(mean(variances)))
 
     end = time()
     print("\nTime elapsed: {}".format(end - start))

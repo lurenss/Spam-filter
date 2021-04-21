@@ -213,9 +213,8 @@ def run(dataset, k_folds):
                 maxAccuracy = scores[i]
         if (scores[i] < minAccuracy):
                 minAccuracy = scores[i]
-        print("Accuracy (iteration " + str(i+1) + "): %.3f%%" % scores[i])
 
-    print("\nAccuracy (minimum): %.3f%%" % minAccuracy)
+    print("Accuracy (minimum): %.3f%%" % minAccuracy)
     print("Accuracy (maximum): %.3f%%" % maxAccuracy)
     print("Accuracy (mean): %.3f%%" % mean(scores))
     print("Variance: " + str(mean(variances)))

@@ -198,6 +198,8 @@ def run(dataset, k_folds):
     minAccuracy = 100
     maxAccuracy = 0
 
+    np.random.shuffle(dataset)
+
     # Evaluate Naive Bayes algorithm
     results = evaluateModel(dataset, naiveBayesAlgorithm, k_folds)
     scores = results[0]
